@@ -17,7 +17,7 @@ param max_generation{GENERATORS} >= 0;
 param linear_cost_coeff {GENERATORS} >= 0;
 
 #
-var p {(i,h) in GENERATORS};
+var p {(i,h) in GENERATORS} >= 0;
 var d {i in BUSES};
 
 
@@ -27,7 +27,7 @@ subject to Power_Demand {i in BUSES} :
 	sum{(i,j,k) in LINES} 0.00001* bus_susceptance[i,j,k] * (d[i] - d[j]) + sum{(i,h) in GENERATORS} p[i,h] = demand[i] ;
 
 subject to line_limit {(i,j,k) in LINES}:
-	 -upper_line_limit[i,j,k] <= bus_susceptance[i,j,k] * (d[i] - d[j]) <= upper_line_limit[i,j,k];
+	 -upper_line_limit[i,j,k] <= 0.00001*bus_susceptance[i,j,k] * (d[i] - d[j]) <= upper_line_limit[i,j,k];
  
 subject to generator_limit {(i,h) in GENERATORS}:
 	min_generation[i,h] <= p[i,h] <= max_generation[i,h];
