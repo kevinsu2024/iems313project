@@ -9,12 +9,12 @@ set GENERATOR_IDS;
 set LINES within (BUSES cross BUSES cross LINE_IDS);
 set GENERATORS within (BUSES cross GENERATOR_IDS);
 
-param bus_susceptance {LINES} >= 0; 
-param upper_line_limit {LINES} >=0;
-param demand {BUSES} >=0;
-param min_generation{GENERATORS} >= 0;
-param max_generation{GENERATORS} >= 0;
-param linear_cost_coeff {GENERATORS} >= 0;
+param bus_susceptance {LINES}; 
+param upper_line_limit {LINES};
+param demand {BUSES};
+param min_generation{GENERATORS};
+param max_generation{GENERATORS};
+param linear_cost_coeff {GENERATORS};
 
 #
 var p {(i,h) in GENERATORS} >= 0;
