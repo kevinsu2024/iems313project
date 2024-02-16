@@ -19,16 +19,23 @@ def convert(cases):
         # parse it to [from_bus, to_bus, line_id, bus_susceptance, upper_line_limit]
         max_bus = 1
         max_line_id = 1
-        for line in bra_file.readlines():
+        bra_file_lines = bra_file.readlines()
+        bus_sets = set()
+        for line in bra_file_lines:
             parsed_line = line.strip().split(',')
-            from_bus, to_bus, line_id, reactance, lower_line_limit, upper_line_limit = parsed_line
+            from_bus, to_bus, line_id, reactance, _, upper_line_limit = parsed_line
+            bus_sets.add((from_bus, to_bus))
+
+        for line in bra_file_lines:
+            parsed_line = line.strip().split(',')
+            from_bus, to_bus, line_id, reactance, _, upper_line_limit = parsed_line
             bus_susceptance = str(int((1/float(reactance))*(10**5)))
             upper_line_limit = str(int(float(upper_line_limit)*(10**5)))
-            
             max_bus = max(max_bus, int(from_bus), int(to_bus))
             max_line_id = max(max_line_id, int(line_id))
             lines.append([from_bus, to_bus, line_id, bus_susceptance, upper_line_limit])
-            lines.append([to_bus, from_bus, line_id, bus_susceptance, upper_line_limit])
+            if (to_bus, from_bus) not in bus_sets:
+                lines.append([to_bus, from_bus, line_id, bus_susceptance, upper_line_limit])
         
 
         demands = []
