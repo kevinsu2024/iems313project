@@ -18,7 +18,7 @@ param linear_cost_coeff {GENERATORS};
 
 #
 var p {(i,h) in GENERATORS} >= 0;
-var d {i in BUSES};
+var d {i in BUSES} >= 0;
 
 
 minimize Total_Cost: sum {(i,h) in GENERATORS} 0.00001*linear_cost_coeff[i,h]* p[i,h];
