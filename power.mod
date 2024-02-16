@@ -1,7 +1,7 @@
 # Data-independent model for power problem
 #
-# Name:
-# Date:
+# Name: Kevin Su, Frank Xin, Andre Tsai
+# Date: Feb 16, 2024
 
 set BUSES;
 set LINE_IDS;
@@ -16,10 +16,9 @@ param min_generation{GENERATORS};
 param max_generation{GENERATORS};
 param linear_cost_coeff {GENERATORS};
 
-#
-var p {(i,h) in GENERATORS} >= 0;
-var d {i in BUSES} >= 0;
 
+var p {(i,h) in GENERATORS};
+var d {i in BUSES};
 
 minimize Total_Cost: sum {(i,h) in GENERATORS} 0.00001*linear_cost_coeff[i,h]* p[i,h];
 
