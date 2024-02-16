@@ -18,18 +18,18 @@ param linear_cost_coeff {GENERATORS};
 
 #
 var p {(i,h) in GENERATORS} >= 0;
-var d {i in BUSES};
+var d {i in BUSES} >= 0;
 
 
 minimize Total_Cost: sum {(i,h) in GENERATORS} 0.00001*linear_cost_coeff[i,h]* p[i,h];
 
 subject to Power_Demand {i in BUSES} : 
-	sum{(i,j,k) in LINES} 0.00001* bus_susceptance[i,j,k] * (d[i] - d[j]) + sum{(i,h) in GENERATORS} p[i,h] = demand[i] ;
+	sum{(i,j,k) in LINES} 0.00001* bus_susceptance[i,j,k] * (d[i] - d[j]) + sum{(i,h) in GENERATORS} p[i,h] = 0.00001* demand[i] ;
 
 subject to line_limit {(i,j,k) in LINES}:
-	 -upper_line_limit[i,j,k] <= 0.00001*bus_susceptance[i,j,k] * (d[i] - d[j]) <= upper_line_limit[i,j,k];
+	 -0.00001*upper_line_limit[i,j,k] <= 0.00001*bus_susceptance[i,j,k] * (d[i] - d[j]) <= 0.00001*upper_line_limit[i,j,k];
  
 subject to generator_limit {(i,h) in GENERATORS}:
-	min_generation[i,h] <= p[i,h] <= max_generation[i,h];
+	0.00001*min_generation[i,h] <= p[i,h] <= 0.00001*max_generation[i,h];
 
 
