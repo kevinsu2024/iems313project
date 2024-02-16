@@ -1,0 +1,19 @@
+# This runfiles solves the Slow Creek Traffic Problem
+#
+# Name: 
+# Date:
+
+option log_file 'power.log';
+reset;
+option solver cplex;
+
+#### Without C-D link ####
+model power.mod;
+data power.dat;
+solve;
+display p, d;
+expand > power.lp;
+
+
+option log_file '';
+close;
