@@ -1,3 +1,6 @@
+
+
+
 def set_init(f, max_num):
     for i in range(1, max_num+1):
         f.write(" " + str(i))
@@ -19,24 +22,30 @@ def convert(cases):
         # parse it to [from_bus, to_bus, line_id, bus_susceptance, upper_line_limit]
         max_bus = 1
         max_line_id = 1
-        bra_file_lines = bra_file.readlines()
-        bus_sets = set()
-        for line in bra_file_lines:
-            parsed_line = line.strip().split(',')
-            from_bus, to_bus, line_id, reactance, _, upper_line_limit = parsed_line
-            bus_sets.add((from_bus, to_bus))
 
-        for line in bra_file_lines:
+        bus_set = set()
+        raw_lines = bra_file.readlines()
+        # for line in raw_lines:
+        #     parsed_line = line.strip().split(',')
+        #     from_bus, to_bus, line_id, reactance, lower_line_limit, upper_line_limit = parsed_line
+        #     bus_set.add((from_bus, to_bus, line_id))
+
+        for line in raw_lines:
             parsed_line = line.strip().split(',')
-            from_bus, to_bus, line_id, reactance, _, upper_line_limit = parsed_line
+            from_bus, to_bus, line_id, reactance, lower_line_limit, upper_line_limit = parsed_line
             bus_susceptance = str(int((1/float(reactance))*(10**5)))
             upper_line_limit = str(int(float(upper_line_limit)*(10**5)))
+            
             max_bus = max(max_bus, int(from_bus), int(to_bus))
             max_line_id = max(max_line_id, int(line_id))
+            if ((from_bus, to_bus, line_id)) in bus_set:
+                line_id = "-" + line_id
             lines.append([from_bus, to_bus, line_id, bus_susceptance, upper_line_limit])
-            if (to_bus, from_bus) not in bus_sets:
-                lines.append([to_bus, from_bus, line_id, bus_susceptance, upper_line_limit])
-        
+            # if (to_bus, from_bus, line_id) not in bus_set:
+            lines.append([to_bus, from_bus, line_id, bus_susceptance, upper_line_limit])
+            
+            bus_set.add((from_bus, to_bus, line_id))
+            bus_set.add((to_bus, from_bus, line_id))
 
         demands = []
         # skip first line (headers)
@@ -65,7 +74,19 @@ def convert(cases):
             max_gen_id = max(max_gen_id, int(gen_id))
             generators.append([bus, gen_id, min_gen, max_gen, lin_cost_coeff])
 
-
+        max_line_id_per_tuple = {}
+        for line in lines:
+            from_bus, to_bus, line_id, bus_susceptance, upper_line_limit = line
+            if (from_bus, to_bus) not in max_line_id_per_tuple:
+                max_line_id_per_tuple[(from_bus, to_bus)] = int(line_id)
+            else:
+                max_line_id_per_tuple[(from_bus, to_bus)] = max(max_line_id_per_tuple[(from_bus, to_bus)], int(line_id))
+        for i, line in enumerate(lines):
+            from_bus, to_bus, line_id, bus_susceptance, upper_line_limit = line
+            if ("-" in line_id):
+                line_id = str(max_line_id_per_tuple[(from_bus, to_bus)] + 1)
+                max_line_id_per_tuple[(from_bus, to_bus)] += 1
+                lines[i] = [from_bus, to_bus, line_id, bus_susceptance, upper_line_limit]
         # Writing dat file
             
         f = open(case+".dat", "w")
@@ -86,6 +107,7 @@ def convert(cases):
 
         f.write("param : bus_susceptance\tupper_line_limit\t:=")
         for from_bus, to_bus, line_id, bus_susceptance, upper_line_limit in lines:
+            
             f.write("\n"+from_bus+" "+to_bus+" "+line_id+"\t"+bus_susceptance+"\t"+upper_line_limit)
         f.write(";\n\n")
 

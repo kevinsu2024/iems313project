@@ -58,9 +58,9 @@ param demand :=
 12 610000
 13 1350000
 14 1490000
+7 0
 8 0
-1 0
-7 0;
+1 0;
 
 param : min_generation	max_generation	linear_cost_coeff	:=
 1 1		0		34000000		792095

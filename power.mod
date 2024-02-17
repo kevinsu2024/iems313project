@@ -26,7 +26,7 @@ subject to Power_Demand {i in BUSES} :
 	sum{(i,j,k) in LINES} 0.00001* bus_susceptance[i,j,k] * (d[i] - d[j]) + sum{(i,h) in GENERATORS} p[i,h] = 0.00001* demand[i] ;
 
 subject to line_limit {(i,j,k) in LINES}:
-	 -0.00001*upper_line_limit[i,j,k] <= 0.00001*bus_susceptance[i,j,k] * (d[i] - d[j]) <= 0.00001*upper_line_limit[i,j,k];
+	-0.00001*upper_line_limit[i,j,k] <= 0.00001*bus_susceptance[i,j,k] * (d[i] - d[j]) <= 0.00001*upper_line_limit[i,j,k];
  
 subject to generator_limit {(i,h) in GENERATORS}:
 	0.00001*min_generation[i,h] <= p[i,h] <= 0.00001*max_generation[i,h];

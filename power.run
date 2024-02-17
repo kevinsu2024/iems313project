@@ -11,30 +11,27 @@ option solver cplex;
 model power.mod;
 data case14_ieee.dat;
 solve;
-display p, d;
 
 reset data;
 data case118_ieee.dat;
 solve;
-display p, d;
+expand > case118_ieee.lp;
 
 reset data;
 data case588_sdet.dat;
 solve;
 expand > case588_sdet.lp;
-display p;
 
 reset data;
 data case4661_sdet.dat;
 solve;
 expand > case4661_sdet.lp;
-display p;
 
 reset data;
 data case13659_pegase.dat;
 solve;
 expand > case13659_pegase.lp;
-display p;
+
 
 
 option log_file '';
